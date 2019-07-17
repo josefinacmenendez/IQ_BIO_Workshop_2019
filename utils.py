@@ -1,9 +1,11 @@
 from scipy.io import loadmat
+from scipy.stats import norm
+from scipy.special import gamma, factorial, gammainc
 from matplotlib import pyplot as plt
 
 def plot_ISIs(ISIs, n_bins, plot_title):
     plt.hist(ISIs,n_bins, density=True)
-    plt.ylabel('Density')
+    plt.ylabel('Counts')
     plt.xlabel('Time (s)')
     plt.title(plot_title)
     plt.show()
@@ -55,13 +57,14 @@ def plot_exponential_dist( pdf_or_cdf_fun, x_vals, lambdas,pdf):
     plt.ylabel(y_label)
     plt.show()
 
-def plot_gamma_dist(gamma_pdf_or_cdf, x_vals, ths, ks, pdf):
-
+def plot_gamma_dist(gamma_pdf_or_cdf, x_vals, ths, ks, pdf, yrange):
+    dist_vals = []
     for i in range(len(ths)):
         th = ths[i]
         k  = ks[i]
-        curr_dist = gamma_pdf_or_cdf_vals = gamma_pdf_or_cdf(x_vals, th, k)
+        curr_dist = gamma_pdf_or_cdf(x_vals, th, k)
         plt.plot(x_vals, curr_dist)
+        dist_vals.append(curr_dist[0])
     legend_vals = ['k: ' + str(ks[i]) + r', $\theta$ : ' + str(ths[i]) for i in range(len(ths))]
     plt.legend(legend_vals)
     if pdf:
@@ -75,6 +78,30 @@ def plot_gamma_dist(gamma_pdf_or_cdf, x_vals, ths, ks, pdf):
     plt.title(fig_title)
     plt.ylabel(y_lab)
     plt.xlabel('x')
-    plt.ylim(ylimrange)
+    plt.ylim(yrange)
+    plt.xlim([0, max(x_vals)])
+    plt.show()
+
+def plot_igauss_dist(igauss_pdf_or_cdf, x_vals, lambdas, muvals, pdf, yrange):
+    dist_vals = []
+    for i in range(len(lambdas)):
+        lam = lambdas[i]
+        mu  = muvals[i]
+        curr_dist = igauss_pdf_or_cdf(x_vals, lam, mu)
+        plt.plot(x_vals, curr_dist)
+        dist_vals.append(curr_dist[0])
+    legend_vals = [r'$\lambda$: ' + str(lambdas[i]) + r', $\mu$ : ' + str(muvals[i]) for i in range(len(muvals))]
+    plt.legend(legend_vals)
+    if pdf:
+        fig_title = 'PDF for the Inverse Gaussian Distribution'
+        y_lab     = 'Density'
+    else:
+        fig_title = 'CDF for the Inverse Gaussian Distribution'
+        y_lab     = '$P(X \leq x)$'
+        yrange    = [0,1]
+    plt.title(fig_title)
+    plt.ylabel(y_lab)
+    plt.xlabel('x')
+    plt.ylim(yrange)
     plt.xlim([0, max(x_vals)])
     plt.show()
