@@ -37,3 +37,44 @@ def make_raster_plot(spike_train, fig_title):
         i += 1
     plt.suptitle(fig_title)
     plt.plot()
+
+def plot_exponential_dist( pdf_or_cdf_fun, x_vals, lambdas,pdf):
+    for lam in lambdas:
+        curr_pdf_or_cdf = pdf_or_cdf_fun(x_vals, lam)
+        plt.plot(x_vals, curr_pdf_or_cdf)
+    legend_vals = ['lambda: ' + str(lam) for lam in lambdas]
+    plt.legend(legend_vals)
+    plt.xlabel('x')
+    if pdf:
+        y_label = 'Probability Density'
+        fig_title = 'PDF for the exponential distribution'
+    else:
+        y_label = '$P(X \leq x)$'
+        fig_title = 'CDF for the exponential distribution'
+    plt.title(fig_title)
+    plt.ylabel(y_label)
+    plt.show()
+
+def plot_gamma_dist(gamma_pdf_or_cdf, x_vals, ths, ks, pdf):
+
+    for i in range(len(ths)):
+        th = ths[i]
+        k  = ks[i]
+        curr_dist = gamma_pdf_or_cdf_vals = gamma_pdf_or_cdf(x_vals, th, k)
+        plt.plot(x_vals, curr_dist)
+    legend_vals = ['k: ' + str(ks[i]) + r', $\theta$ : ' + str(ths[i]) for i in range(len(ths))]
+    plt.legend(legend_vals)
+    if pdf:
+        fig_title = 'PDF for the Gamma Distribution'
+        y_lab     = 'Density'
+        ylimrange = [0, 0.5]
+    else:
+        fig_title = 'CDF for the Gamma Distribution'
+        y_lab     = '$P(X \leq x)$'
+        ylimrange = [0,1]
+    plt.title(fig_title)
+    plt.ylabel(y_lab)
+    plt.xlabel('x')
+    plt.ylim(ylimrange)
+    plt.xlim([0, max(x_vals)])
+    plt.show()
